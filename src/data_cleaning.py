@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 class DataStrategy(ABC):
     """Abstract base class for data handling strategies.
     This class defines the interface for data processing steps."""
-    
+
     @abstractmethod
     def handle_data(self, data: pd.DataFrame) -> pd.DataFrame:
         pass
@@ -24,6 +24,7 @@ class DataPreProcessingStrategy(DataStrategy):
             pd.DataFrame: The pre-processed data.
         """
         try:
+            # Drop unnecessary columns
             data = data.drop(
                 [
                     "order_approved_at",
@@ -33,16 +34,40 @@ class DataPreProcessingStrategy(DataStrategy):
                     "order_purchase_timestamp",
                 ], 
             axis=1)
-            data['product_weight_g'].fillna(data['product_weight_g'].median(), inplace=True)
-            data['product_length_cm'].fillna(data['product_length_cm'].median(), inplace=True)
-            data['product_height_cm'].fillna(data['product_height_cm'].median(), inplace=True)
-            data['product_width_cm'].fillna(data['product_width_cm'].median(), inplace=True)
-            data['review_comment_message'].fillna('No review', inplace=True)
 
             # drop non-numeric columns for simplicity
             data = data.select_dtypes(include=[np.number])
             cols_to_drop = ["customer_zip_code_prefix", "order_item_id"]
             data = data.drop(cols_to_drop, axis=1)
+
+            # Fill missing values with the median of each column
+            # List of columns to fill with median
+            columns_to_fill = [
+                'geolocation_zip_code_prefix',
+                'geolocation_lat',
+                'geolocation_lng',
+                'order_item_id',
+                'price',
+                'freight_value',
+                'product_name_lenght',
+                'product_description_lenght',
+                'product_photos_qty',
+                'product_weight_g',
+                'product_length_cm',
+                'product_height_cm',
+                'product_width_cm',
+                'seller_zip_code_prefix',
+                'payment_sequential',
+                'payment_installments',
+                'payment_value',
+                'review_score'
+            ]
+
+            # Fill each column with its median
+            for col in columns_to_fill:
+                if col in data.columns:
+                    data[col] = data[col].fillna(data[col].median())
+
             return data
         except Exception as e:
             logging.error("Error in data pre-processing: {}".format(e))

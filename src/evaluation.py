@@ -65,7 +65,7 @@ class RMSE(Evaluation):
         
         try:
             logging.info("Calculating RMSE...")
-            rmse = root_mean_squared_error(y_true, y_pred, squared=False)
+            rmse = root_mean_squared_error(y_true, y_pred)
             logging.info(f"RMSE: {rmse}")
             return rmse
         except Exception as e:

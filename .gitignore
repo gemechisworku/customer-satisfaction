@@ -140,6 +140,8 @@ raw_files/
 .env
 .envrc
 .venv
+.venv311/
+venv311/
 env/
 venv/
 ENV/

@@ -3,7 +3,7 @@ import pandas as pd
 from zenml import step
 from sklearn.base import RegressorMixin
 from src.model_dev import LinearRegressionModel
-from .config import ModelNameConfig
+# from .config import ModelNameConfig
 
 @step
 def train_model(
@@ -11,7 +11,7 @@ def train_model(
     X_test: pd.DataFrame,
     y_train: pd.DataFrame,
     y_test: pd.DataFrame,
-    config: ModelNameConfig
+    model_name: str = "LinearRegression",
 ) -> RegressorMixin:
     """Step to train the machine learning model on the injested data.
     Args:
@@ -25,12 +25,12 @@ def train_model(
     """
     model = None
     try:
-        if config.model_name == "LinearRegression":
+        if model_name == "LinearRegression":
             model = LinearRegressionModel()
             trained_model = model.train(X_train, y_train)
         else:
-            raise ValueError(f"Model {config.model_name} is not supported.")
-        
+            raise ValueError(f"Model {model_name} is not supported.")
+
         logging.info("Model training completed successfully.")
         return trained_model
     except Exception as e:

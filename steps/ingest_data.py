@@ -18,7 +18,7 @@ class IngestData:
             pd.DataFrame: Data loaded from the CSV file.
         """
         self.logger.info(f"Ingesting the data from {self.file_path}")
-        return pd.read_csv(self.file_path)
+        return pd.read_csv(self.file_path, parse_dates=["order_purchase_timestamp", "order_approved_at", "order_delivered_carrier_date", "order_delivered_customer_date", "order_estimated_delivery_date"])
 
 
 @step
